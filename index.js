@@ -8,13 +8,27 @@ const openai = new OpenAI({
     apiKey: process.env.DEEPSEEK_API_KEY
 });
 
-async function main() {
-  const completion = await openai.chat.completions.create({
-    messages: [{ role: "system", content: "You are a helpful assistant." }],
-    model: "deepseek-chat",
-  });
+async function sendMessage(userInput) {
+    try {
+        const completion = await openai.chat.completions.create({
+            messages: [{ role: "user", content: userInput }],
+            model: "deepseek-chat",
+        });
 
-  console.log(completion.choices[0].message.content);
+        const response = completion.choices[0].message.content;
+        document.getElementById('chatResponse').innerText = response;
+    } catch (error) {
+        console.error("Error:", error);
+        document.getElementById('chatResponse').innerText = "Terjadi kesalahan. Silakan coba lagi.";
+    }
 }
 
-main();
+// Fungsi untuk menangani klik tombol
+window.sendMessage = function () {
+    const userInput = document.getElementById('userInput').value;
+    if (userInput) {
+        sendMessage(userInput);
+    } else {
+        alert("Silakan masukkan pesan!");
+    }
+};
