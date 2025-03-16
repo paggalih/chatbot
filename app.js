@@ -8,7 +8,14 @@ const openai = new OpenAI({
     apiKey: process.env.DEEPSEEK_API_KEY
 });
 
-async function sendMessage(userInput) {
+// Definisikan fungsi sendMessage di scope global
+window.sendMessage = async function () {
+    const userInput = document.getElementById('userInput').value;
+    if (!userInput) {
+        alert("Silakan masukkan pesan!");
+        return;
+    }
+
     try {
         const completion = await openai.chat.completions.create({
             messages: [{ role: "user", content: userInput }],
@@ -20,15 +27,5 @@ async function sendMessage(userInput) {
     } catch (error) {
         console.error("Error:", error);
         document.getElementById('chatResponse').innerText = "Terjadi kesalahan. Silakan coba lagi.";
-    }
-}
-
-// Fungsi untuk menangani klik tombol
-window.sendMessage = function () {
-    const userInput = document.getElementById('userInput').value;
-    if (userInput) {
-        sendMessage(userInput);
-    } else {
-        alert("Silakan masukkan pesan!");
     }
 };
